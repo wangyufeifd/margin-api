@@ -2,8 +2,7 @@ package com.margin.api.processor;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import com.margin.api.cache.FIFOQueue;
+import com.margin.api.aggregator.PositionAggregator;
 import com.margin.api.model.Execution;
 import com.margin.api.model.Position;
 import io.vertx.core.Future;
@@ -17,6 +16,7 @@ import java.util.UUID;
 
 /**
  * Processor that transforms executions into positions
+ * Pushes results directly to PositionAggregator (no queue)
  */
 @Singleton
 public class PositionProcessor implements Processor<Position> {
@@ -24,15 +24,15 @@ public class PositionProcessor implements Processor<Position> {
     private static final Logger logger = LoggerFactory.getLogger(PositionProcessor.class);
     
     private final Vertx vertx;
-    private final FIFOQueue<Position> cache;
+    private final PositionAggregator aggregator;
 
     @Inject
     public PositionProcessor(
             Vertx vertx,
-            @Named("positionQueueSize") int queueSize) {
+            PositionAggregator aggregator) {
         this.vertx = vertx;
-        this.cache = new FIFOQueue<>(queueSize);
-        logger.info("PositionProcessor initialized with queue size: {}", queueSize);
+        this.aggregator = aggregator;
+        logger.info("PositionProcessor initialized with push-based aggregation");
     }
 
     @Override
@@ -65,9 +65,10 @@ public class PositionProcessor implements Processor<Position> {
                         Instant.now()
                 );
                 
-                // Add to cache
-                cache.offer(position);
-                logger.debug("Position added to cache: {} (queue size: {})", position.getId(), cache.size());
+                // Push directly to aggregator (no queue)
+                aggregator.add(position)
+                    .onSuccess(agg -> logger.debug("Position pushed to aggregator: {}", position.getId()))
+                    .onFailure(err -> logger.error("Failed to push position to aggregator", err));
                 
                 promise.complete(position);
             } catch (Exception e) {
@@ -75,11 +76,6 @@ public class PositionProcessor implements Processor<Position> {
                 promise.fail(e);
             }
         });
-    }
-
-    @Override
-    public FIFOQueue<Position> getCache() {
-        return cache;
     }
 
     @Override

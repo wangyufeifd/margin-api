@@ -4,6 +4,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import com.margin.api.processor.MarginProcessor;
+import com.margin.api.processor.PositionProcessor;
+import com.margin.api.refdata.DefaultRefDataService;
+import com.margin.api.refdata.RefDataService;
+import com.margin.api.registry.DefaultProcessorRegistry;
+import com.margin.api.registry.ProcessorRegistry;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
@@ -12,12 +18,18 @@ import java.util.Set;
 
 /**
  * Guice module for dependency injection configuration
+ * Wires the new streamlined architecture:
+ * Kafka → DataLoader → ProcessorRegistry → Processors → Aggregators → Cache
  */
 public class ApplicationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        // Processors and Aggregators are bound automatically via @Singleton annotations
+        // Bind interfaces to implementations
+        bind(ProcessorRegistry.class).to(DefaultProcessorRegistry.class);
+        bind(RefDataService.class).to(DefaultRefDataService.class);
+        
+        // Processors and Aggregators are @Singleton and auto-bound
     }
 
     @Provides
@@ -40,10 +52,7 @@ public class ApplicationModule extends AbstractModule {
                 .put("http.host", "0.0.0.0")
                 .put("kafka.bootstrap.servers", "localhost:9092")
                 .put("kafka.group.id", "margin-api-consumer-group")
-                .put("kafka.topics", "trade-executions")
-                .put("margin.queue.size", 1000)
-                .put("position.queue.size", 1000)
-                .put("aggregator.poll.interval", 1000);
+                .put("kafka.topics", "trade-executions");
     }
 
     @Provides
@@ -66,26 +75,22 @@ public class ApplicationModule extends AbstractModule {
     public Set<String> provideKafkaTopics(JsonObject config) {
         return Set.of(config.getString("kafka.topics", "trade-executions").split(","));
     }
-
+    
+    /**
+     * Initialize ProcessorRegistry with all processors
+     */
     @Provides
     @Singleton
-    @Named("marginQueueSize")
-    public int provideMarginQueueSize(JsonObject config) {
-        return config.getInteger("margin.queue.size", 1000);
-    }
-
-    @Provides
-    @Singleton
-    @Named("positionQueueSize")
-    public int providePositionQueueSize(JsonObject config) {
-        return config.getInteger("position.queue.size", 1000);
-    }
-
-    @Provides
-    @Singleton
-    @Named("aggregatorPollInterval")
-    public long provideAggregatorPollInterval(JsonObject config) {
-        return config.getLong("aggregator.poll.interval", 1000L);
+    public ProcessorRegistry provideInitializedRegistry(
+            ProcessorRegistry registry,
+            MarginProcessor marginProcessor,
+            PositionProcessor positionProcessor) {
+        
+        // Register all processors
+        registry.register(marginProcessor);
+        registry.register(positionProcessor);
+        
+        return registry;
     }
 }
 

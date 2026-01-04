@@ -1,64 +1,68 @@
 package com.margin.api.aggregator;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.margin.api.model.Position;
-import com.margin.api.processor.PositionProcessor;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Aggregator that aggregates position data from the FIFO queue
- * Maintains aggregated positions by account and symbol
+ * Push-based position aggregator with bounded Caffeine cache
+ * Aggregates position data in real-time as it's pushed from processors
  */
 @Singleton
 public class PositionAggregator implements Aggregator<Position, AggregatedPosition> {
     
     private static final Logger logger = LoggerFactory.getLogger(PositionAggregator.class);
+    private static final int MAX_CACHE_SIZE = 10_000;
+    private static final int TTL_HOURS = 24;
     
     private final Vertx vertx;
-    private final PositionProcessor positionProcessor;
-    private final Map<String, AggregatedPosition> outputCache;
-    private final long pollInterval;
-    private Long timerId;
+    private final Cache<String, AggregatedPosition> cache;
 
     @Inject
-    public PositionAggregator(
-            Vertx vertx,
-            PositionProcessor positionProcessor,
-            @Named("aggregatorPollInterval") long pollInterval) {
+    public PositionAggregator(Vertx vertx) {
         this.vertx = vertx;
-        this.positionProcessor = positionProcessor;
-        this.outputCache = new ConcurrentHashMap<>();
-        this.pollInterval = pollInterval;
-        logger.info("PositionAggregator initialized with poll interval: {}ms", pollInterval);
+        this.cache = Caffeine.newBuilder()
+                .maximumSize(MAX_CACHE_SIZE)
+                .expireAfterWrite(TTL_HOURS, TimeUnit.HOURS)
+                .recordStats()
+                .build();
+        logger.info("PositionAggregator initialized with Caffeine cache (max={}, TTL={}h)", 
+                MAX_CACHE_SIZE, TTL_HOURS);
     }
 
     @Override
-    public Future<AggregatedPosition> aggregate(Position position) {
+    public Future<AggregatedPosition> add(Position position) {
         return vertx.executeBlocking(promise -> {
             try {
                 String key = generateKey(position.getAccountId(), position.getSymbol());
                 
-                AggregatedPosition aggregated = outputCache.computeIfAbsent(key, k -> 
+                // Get or create aggregated position
+                AggregatedPosition aggregated = cache.get(key, k -> 
                     new AggregatedPosition(position.getAccountId(), position.getSymbol())
                 );
                 
-                // Aggregate the position
+                // Add position to aggregated state
                 aggregated.addPosition(position);
                 
-                logger.debug("Aggregated position for key {}: quantity={}, avgPrice={}", 
+                // Update cache
+                cache.put(key, aggregated);
+                
+                logger.debug("Added position to aggregation for key {}: quantity={}, avgPrice={}", 
                         key, aggregated.getNetQuantity(), aggregated.getAveragePrice());
                 
                 promise.complete(aggregated);
             } catch (Exception e) {
-                logger.error("Error aggregating position", e);
+                logger.error("Error adding position to aggregation", e);
                 promise.fail(e);
             }
         });
@@ -66,7 +70,12 @@ public class PositionAggregator implements Aggregator<Position, AggregatedPositi
 
     @Override
     public AggregatedPosition get(String key) {
-        return outputCache.get(key);
+        return cache.getIfPresent(key);
+    }
+
+    @Override
+    public Map<String, AggregatedPosition> getAll() {
+        return new HashMap<>(cache.asMap());
     }
 
     @Override
@@ -75,32 +84,19 @@ public class PositionAggregator implements Aggregator<Position, AggregatedPositi
     }
 
     @Override
-    public void start() {
-        logger.info("Starting PositionAggregator polling...");
-        timerId = vertx.setPeriodic(pollInterval, id -> {
-            positionProcessor.getCache().drain(position -> {
-                aggregate(position).onFailure(err -> 
-                    logger.error("Failed to aggregate position: {}", position.getId(), err)
-                );
-            });
-        });
-    }
-
-    @Override
-    public void stop() {
-        if (timerId != null) {
-            logger.info("Stopping PositionAggregator polling...");
-            vertx.cancelTimer(timerId);
-            timerId = null;
-        }
+    public CacheStats getStats() {
+        com.github.benmanes.caffeine.cache.stats.CacheStats stats = cache.stats();
+        return new CacheStats(
+                cache.estimatedSize(),
+                stats.hitCount(),
+                stats.missCount(),
+                stats.hitRate()
+        );
     }
 
     private String generateKey(String accountId, String symbol) {
         return accountId + ":" + symbol;
     }
-
-    public Map<String, AggregatedPosition> getOutputCache() {
-        return outputCache;
-    }
 }
+
 
