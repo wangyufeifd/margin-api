@@ -1,2 +1,4 @@
-rootProject.name = 'margin-api'
+rootProject.name = 'margin-api-project'
 
+include 'margin-api'
+include 'margin-saving'

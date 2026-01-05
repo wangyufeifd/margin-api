@@ -1,64 +1,29 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
-group = 'com.margin'
-version = '1.0.0-SNAPSHOT'
-sourceCompatibility = '17'
-
-repositories {
-    mavenCentral()
+allprojects {
+    group = 'com.margin'
+    version = '1.0.0-SNAPSHOT'
+    
+    repositories {
+        mavenCentral()
+    }
 }
 
-dependencies {
-    // Vert.x
-    implementation platform('io.vertx:vertx-stack-depchain:4.5.1')
-    implementation 'io.vertx:vertx-core'
-    implementation 'io.vertx:vertx-web'
-    implementation 'io.vertx:vertx-web-client'
-    implementation 'io.vertx:vertx-config'
-    implementation 'io.vertx:vertx-kafka-client'
+subprojects {
+    apply plugin: 'java'
     
-    // Google Guice for dependency injection
-    implementation 'com.google.inject:guice:7.0.0'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
     
-    // Kafka client
-    implementation 'org.apache.kafka:kafka-clients:3.6.1'
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
     
-    // JSON processing
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
-    
-    // Cache
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
-    
-    // RocksDB for persistent caching
-    implementation 'org.rocksdb:rocksdbjni:8.8.1'
-    
-    // Logging
-    implementation 'org.slf4j:slf4j-api:2.0.9'
-    implementation 'ch.qos.logback:logback-classic:1.4.14'
-    
-    // Testing
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
-    testImplementation 'org.mockito:mockito-core:5.8.0'
-    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
-    testImplementation 'io.vertx:vertx-junit5'
-    testImplementation 'io.vertx:vertx-web-client'
-}
-
-application {
-    mainClass = 'com.margin.api.Application'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-java {
-    withSourcesJar()
-    withJavadocJar()
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
 
