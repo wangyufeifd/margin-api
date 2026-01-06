@@ -102,6 +102,20 @@ public class MarginSavingEngine {
     private List<Position> positions = new ArrayList<>();
     
     /**
+     * Get all loaded combinations (for testing)
+     */
+    public List<Combination> getCombinations() {
+        return combinations;
+    }
+    
+    /**
+     * Get all loaded positions (for testing)
+     */
+    public List<Position> getPositions() {
+        return positions;
+    }
+    
+    /**
      * Load combination parameters from file
      */
     public void loadCombinations(String filePath) throws IOException {

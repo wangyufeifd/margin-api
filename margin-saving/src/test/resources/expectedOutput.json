@@ -1,0 +1,276 @@
+{
+  "summary": {
+    "totalCombinationsLoaded": 157478,
+    "totalPositionsLoaded": 34,
+    "totalAccounts": 6,
+    "totalPairedCombinations": 14,
+    "totalContractsPaired": 220,
+    "totalUnpairedPositions": 10,
+    "totalMarginRequirement": 377191.16
+  },
+  "pairedResults": [
+    {
+      "pairNumber": 1,
+      "combinationName": "c2603,-c2603",
+      "priority": 36,
+      "pairsMatched": 10,
+      "marginPerPair": 155.61,
+      "totalMargin": 1556.10,
+      "account": "client_E"
+    },
+    {
+      "pairNumber": 2,
+      "combinationName": "jd2601,-jd2601",
+      "priority": 107,
+      "pairsMatched": 6,
+      "marginPerPair": 630.20,
+      "totalMargin": 3781.20,
+      "account": "client_E"
+    },
+    {
+      "pairNumber": 3,
+      "combinationName": "c2603,-c2605",
+      "priority": 535,
+      "pairsMatched": 10,
+      "marginPerPair": 472.92,
+      "totalMargin": 4729.20,
+      "account": "client_E"
+    },
+    {
+      "pairNumber": 6,
+      "combinationName": "fb2601,-fb2601",
+      "priority": 71,
+      "pairsMatched": 4,
+      "marginPerPair": 256.00,
+      "totalMargin": 1024.00,
+      "account": "client_F"
+    },
+    {
+      "pairNumber": 7,
+      "combinationName": "a2605,-a2609",
+      "priority": 265,
+      "pairsMatched": 8,
+      "marginPerPair": 1198.12,
+      "totalMargin": 9584.96,
+      "account": "client_F"
+    },
+    {
+      "pairNumber": 8,
+      "combinationName": "a2607,-a2611",
+      "priority": 275,
+      "pairsMatched": 5,
+      "marginPerPair": 1196.16,
+      "totalMargin": 5980.80,
+      "account": "client_F"
+    },
+    {
+      "pairNumber": 10,
+      "combinationName": "a2601,-a2601",
+      "priority": 1,
+      "pairsMatched": 5,
+      "marginPerPair": 840.60,
+      "totalMargin": 4203.00,
+      "account": "client_A"
+    },
+    {
+      "pairNumber": 11,
+      "combinationName": "c2601,-c2601",
+      "priority": 35,
+      "pairsMatched": 8,
+      "marginPerPair": 458.40,
+      "totalMargin": 3667.20,
+      "account": "client_A"
+    },
+    {
+      "pairNumber": 12,
+      "combinationName": "a2601,-a2603",
+      "priority": 249,
+      "pairsMatched": 3,
+      "marginPerPair": 3362.40,
+      "totalMargin": 10087.20,
+      "account": "client_A"
+    },
+    {
+      "pairNumber": 15,
+      "combinationName": "i2601,-i2601",
+      "priority": 83,
+      "pairsMatched": 8,
+      "marginPerPair": 1629.00,
+      "totalMargin": 13032.00,
+      "account": "client_C"
+    },
+    {
+      "pairNumber": 16,
+      "combinationName": "i2602,-i2602",
+      "priority": 84,
+      "pairsMatched": 3,
+      "marginPerPair": 889.90,
+      "totalMargin": 2669.70,
+      "account": "client_C"
+    },
+    {
+      "pairNumber": 17,
+      "combinationName": "b2605,-b2607",
+      "priority": 317,
+      "pairsMatched": 10,
+      "marginPerPair": 1450.68,
+      "totalMargin": 14506.80,
+      "account": "client_C"
+    },
+    {
+      "pairNumber": 21,
+      "combinationName": "a2601,-a2601",
+      "priority": 1,
+      "pairsMatched": 10,
+      "marginPerPair": 840.60,
+      "totalMargin": 8406.00,
+      "account": "client_B"
+    },
+    {
+      "pairNumber": 22,
+      "combinationName": "j2601,-j2601",
+      "priority": 95,
+      "pairsMatched": 20,
+      "marginPerPair": 2891.00,
+      "totalMargin": 57820.00,
+      "account": "client_B"
+    }
+  ],
+  "unpairedResults": [
+    {
+      "positionNumber": 4,
+      "contract": "eb2608",
+      "direction": "buy",
+      "quantity": 2,
+      "marginPerLot": 13782.00,
+      "totalMargin": 27564.00,
+      "account": "client_D"
+    },
+    {
+      "positionNumber": 5,
+      "contract": "l2601",
+      "direction": "buy",
+      "quantity": 5,
+      "marginPerLot": 12654.00,
+      "totalMargin": 63270.00,
+      "account": "client_D"
+    },
+    {
+      "positionNumber": 9,
+      "contract": "fb2601",
+      "direction": "buy",
+      "quantity": 6,
+      "marginPerLot": 2560.00,
+      "totalMargin": 15360.00,
+      "account": "client_F"
+    },
+    {
+      "positionNumber": 13,
+      "contract": "a2601",
+      "direction": "buy",
+      "quantity": 2,
+      "marginPerLot": 8406.00,
+      "totalMargin": 16812.00,
+      "account": "client_A"
+    },
+    {
+      "positionNumber": 14,
+      "contract": "i2605",
+      "direction": "buy",
+      "quantity": 7,
+      "marginPerLot": 1591.00,
+      "totalMargin": 11137.00,
+      "account": "client_A"
+    },
+    {
+      "positionNumber": 18,
+      "contract": "i2601",
+      "direction": "buy",
+      "quantity": 4,
+      "marginPerLot": 1629.00,
+      "totalMargin": 6516.00,
+      "account": "client_C"
+    },
+    {
+      "positionNumber": 19,
+      "contract": "i2602",
+      "direction": "buy",
+      "quantity": 3,
+      "marginPerLot": 1618.00,
+      "totalMargin": 4854.00,
+      "account": "client_C"
+    },
+    {
+      "positionNumber": 20,
+      "contract": "i2603",
+      "direction": "buy",
+      "quantity": 4,
+      "marginPerLot": 1605.00,
+      "totalMargin": 6420.00,
+      "account": "client_C"
+    },
+    {
+      "positionNumber": 23,
+      "contract": "a2601",
+      "direction": "buy",
+      "quantity": 5,
+      "marginPerLot": 8406.00,
+      "totalMargin": 42030.00,
+      "account": "client_B"
+    },
+    {
+      "positionNumber": 24,
+      "contract": "a2603",
+      "direction": "buy",
+      "quantity": 5,
+      "marginPerLot": 8436.00,
+      "totalMargin": 42180.00,
+      "account": "client_B"
+    }
+  ],
+  "accountSummary": [
+    {
+      "account": "client_A",
+      "pairedContracts": 16,
+      "unpairedContracts": 9,
+      "pairingEfficiency": "64%",
+      "totalMargin": 45906.40
+    },
+    {
+      "account": "client_B",
+      "pairedContracts": 40,
+      "unpairedContracts": 10,
+      "pairingEfficiency": "80%",
+      "totalMargin": 150436.00
+    },
+    {
+      "account": "client_C",
+      "pairedContracts": 21,
+      "unpairedContracts": 11,
+      "pairingEfficiency": "66%",
+      "totalMargin": 47998.50
+    },
+    {
+      "account": "client_D",
+      "pairedContracts": 0,
+      "unpairedContracts": 7,
+      "pairingEfficiency": "0%",
+      "totalMargin": 90834.00
+    },
+    {
+      "account": "client_E",
+      "pairedContracts": 26,
+      "unpairedContracts": 0,
+      "pairingEfficiency": "100%",
+      "totalMargin": 10066.50
+    },
+    {
+      "account": "client_F",
+      "pairedContracts": 17,
+      "unpairedContracts": 6,
+      "pairingEfficiency": "74%",
+      "totalMargin": 31949.76
+    }
+  ]
+}
+

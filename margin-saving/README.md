@@ -143,14 +143,21 @@ The engine uses a greedy algorithm to find pairs:
 ## Test Cases and Documentation
 
 For comprehensive test coverage and examples, see:
+- **[TEST_README.md](TEST_README.md)** - **Automated test suite** (12 JUnit tests, 100% passing)
 - **[POSITION_TEST_CASES.md](POSITION_TEST_CASES.md)** - Detailed explanation of each test scenario
 - **[TEST_RESULTS_SUMMARY.md](TEST_RESULTS_SUMMARY.md)** - Complete test results with analysis
 
 The test suite includes:
+- **12 automated JUnit tests** validating all functionality
 - 6 different client accounts
 - 34 positions across 10 different products (a, b, c, i, j, jd, jm, l, eb, fb)
 - Perfect hedges, partial hedges, calendar spreads, and unpaired positions
 - Account isolation verification
 - Margin efficiency comparisons (0% to 100% pairing efficiency)
 - Total test margin requirement: 377,191.16
+
+### Running Tests
+```bash
+./gradlew :margin-saving:test
+```
 
